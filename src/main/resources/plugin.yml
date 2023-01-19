@@ -1,0 +1,5 @@
+name: Multiverse-Hardcore
+main: gg.ggs.jackalgaming.mvhardcore.Plugin
+version: 0.0.1
+api-version: 1.15
+description: Create team-based multiverse hardcore worlds
