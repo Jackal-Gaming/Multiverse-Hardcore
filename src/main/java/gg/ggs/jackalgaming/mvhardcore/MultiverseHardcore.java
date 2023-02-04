@@ -1,6 +1,5 @@
 package gg.ggs.jackalgaming.mvhardcore;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -8,11 +7,9 @@ import java.util.logging.Logger;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import com.dumptruckman.minecraft.util.Logging;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVPlugin;
 import com.onarandombox.MultiverseCore.commands.HelpCommand;
@@ -24,13 +21,15 @@ import gg.ggs.jackalgaming.mvhardcore.commands.InfoCommand;
  * mvhardcore java plugin
  */
 public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
-  private String name;
 
+  private Logger logger;
+  private String name;
   private String multiverCorePluginName = "Multiverse-Core";
   private int minimumMultiverseCoreVersion = 22;
   private MultiverseCore mvCore;
 
   private String commandAlias = "mvhc";
+
   public String getCommandAlias() {
     return commandAlias;
   }
@@ -43,27 +42,30 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
 
   @Override
   public void onEnable() {
-    Logging.init(this);
-    log(Level.INFO, "Attempting to enable " + this.name);
-
-    // Register DI instances
-    this.name = this.getName();
-
     try {
+      this.name = this.getName();
+      this.logger = Logger.getLogger(this.name);
+      log(Level.INFO, "Attempting to enable " + this.name);
+
+      // Register DI instances
       loadMultiverseCore();
       loadCommands();
+      log(Level.INFO, "Start of increment plugin count invokation");
+      this.getCore().incrementPluginCount();
+
+      // Register events
+  
+      log(Level.INFO, this.name + " enabled");
     } catch (Exception e) {
-      this.getServer().getPluginManager().disablePlugin(this);
       log(Level.WARNING, "Failed to load. Error: " + e.getMessage());
-      return;
+      this.getServer().getPluginManager().disablePlugin(this);
     }
-
-    // Register events
-
-    log(Level.INFO, this.name + " enabled");
   }
 
   private void loadMultiverseCore() {
+    
+    log(Level.INFO, "Start of loadMultiverseCore method");
+
     // Retrieve plugin
     this.mvCore = (MultiverseCore) this.getServer().getPluginManager().getPlugin(this.multiverCorePluginName);
     if (this.mvCore == null) {
@@ -85,6 +87,9 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
   }
 
   private void loadCommands() {
+    
+    log(Level.INFO, "Start of loadCommands method");
+
     this.commandHandler = this.mvCore.getCommandHandler();
     this.commandHandler.registerCommand(new InfoCommand(this));
 
@@ -101,6 +106,8 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
   @Override
   public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command,
       @NotNull String label, @NotNull String[] args) {
+
+    log(Level.WARNING, "Running command: " + command.getName());
     if (!this.isEnabled()) {
       sender.sendMessage("This plugin is Disabled!");
       return true;
@@ -117,12 +124,14 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
 
   @Override
   public void onLoad() {
-      getDataFolder().mkdirs();
+    getDataFolder().mkdirs();
   }
 
   @Override
   public void log(Level level, String msg) {
-    Logging.log(level, msg);    
+    if (logger != null) {
+      logger.log(level, msg);
+    }
   }
 
   @Override
@@ -130,11 +139,11 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
     buffer += logAndAddToPasteBinBuffer("Multiverse-Hardcore Version: " + this.getDescription().getVersion());
     return buffer;
   }
-  
+
   private String logAndAddToPasteBinBuffer(String string) {
     this.log(Level.INFO, string);
     return "[Multiverse-Hardcore] " + string + '\n';
-}
+  }
 
   @Override
   public MultiverseCore getCore() {

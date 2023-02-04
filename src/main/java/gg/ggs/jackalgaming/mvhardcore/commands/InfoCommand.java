@@ -22,7 +22,7 @@ public class InfoCommand extends BaseCommand {
         this.addKey(plugin.getCommandAlias() + " info");
         this.addKey(plugin.getCommandAlias() + "info");
         this.addKey(plugin.getCommandAlias() + "i");
-        this.setPermission(getPermission());
+        this.setPermission(PERMISSION);
     }
 
     @Override
