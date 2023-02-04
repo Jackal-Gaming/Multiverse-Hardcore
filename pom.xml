@@ -16,11 +16,15 @@
 	</properties>
 
 	<repositories>
-		<!-- This adds the Spigot Maven repository to the build -->
-		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-		</repository>
+		<!-- This adds the repositories to the build process -->
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>OnARandomBox</id>
+            <url>https://repo.onarandombox.com/content/groups/public/</url>
+        </repository>
 	</repositories>
 
 	<dependencies>
@@ -32,11 +36,25 @@
 		</dependency>
 		<!--This adds the Spigot API artifact to the build -->
 		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>1.15.1-R0.1-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.13.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.onarandombox.multiversecore</groupId>
+            <artifactId>Multiverse-Core</artifactId>
+            <version>4.2.2</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft</groupId>
+            <artifactId>Logging</artifactId>
+            <version>1.1.1</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
 	</dependencies>
 
 	<build>

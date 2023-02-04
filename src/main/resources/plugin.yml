@@ -1,5 +1,15 @@
 name: Multiverse-Hardcore
-main: gg.ggs.jackalgaming.mvhardcore.Plugin
+main: gg.ggs.jackalgaming.mvhardcore.MultiverseHardcore
 version: 0.0.1
-api-version: 1.15
+api-version: 1.13
+author: jackal-gaming
+depend: ['Multiverse-Core']
 description: Create team-based multiverse hardcore worlds
+
+commands:
+  mvhc:
+    description: Generic Multiverse-Hardcore Command
+    usage: /<command>
+  mvhcinfo:
+    description: Returns detailed information on the ongoing hardcore world, if any
+    usage: /<command>
