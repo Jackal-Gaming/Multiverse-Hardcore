@@ -1,5 +1,6 @@
 package gg.ggs.jackalgaming.mvhardcore;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -16,6 +17,7 @@ import com.onarandombox.MultiverseCore.commands.HelpCommand;
 import com.onarandombox.commandhandler.CommandHandler;
 
 import gg.ggs.jackalgaming.mvhardcore.commands.InfoCommand;
+import gg.ggs.jackalgaming.mvhardcore.configuration.HardcoreConfig;
 
 /*
  * mvhardcore java plugin
@@ -24,21 +26,16 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
 
   private Logger logger;
   private String name;
+  private String commandAlias = "mvhc";
+
+  // External Plugin
   private String multiverCorePluginName = "Multiverse-Core";
   private int minimumMultiverseCoreVersion = 22;
   private MultiverseCore mvCore;
 
-  private String commandAlias = "mvhc";
-
-  public String getCommandAlias() {
-    return commandAlias;
-  }
-
-  private CommandHandler commandHandler;
-
-  private CommandHandler getCommandHandler() {
-    return this.commandHandler;
-  }
+  // Services
+  private HardcoreConfig config;
+  private CommandHandler cmdHandler;
 
   @Override
   public void onEnable() {
@@ -48,13 +45,13 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
       log(Level.INFO, "Attempting to enable " + this.name);
 
       // Register DI instances
-      loadMultiverseCore();
-      loadCommands();
-      log(Level.INFO, "Start of increment plugin count invokation");
+      this.mvCore = loadMultiverseCore();
+      this.config = loadConfig();
+      this.cmdHandler = loadCommands();
       this.getCore().incrementPluginCount();
 
       // Register events
-  
+
       log(Level.INFO, this.name + " enabled");
     } catch (Exception e) {
       log(Level.WARNING, "Failed to load. Error: " + e.getMessage());
@@ -62,42 +59,55 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
     }
   }
 
-  private void loadMultiverseCore() {
-    
+  private MultiverseCore loadMultiverseCore() throws IllegalStateException {
+
     log(Level.INFO, "Start of loadMultiverseCore method");
 
     // Retrieve plugin
-    this.mvCore = (MultiverseCore) this.getServer().getPluginManager().getPlugin(this.multiverCorePluginName);
-    if (this.mvCore == null) {
+    MultiverseCore multiverseCorePlugin = (MultiverseCore) this.getServer().getPluginManager()
+        .getPlugin(this.multiverCorePluginName);
+    if (multiverseCorePlugin == null) {
       log(Level.SEVERE, "Unable to load dependent plugin: " + this.multiverCorePluginName);
       this.getServer().getPluginManager().disablePlugin(this);
       throw new IllegalStateException("Unable to load dependent plugin");
     }
 
     // Ensure version is valid
-    if (this.mvCore.getProtocolVersion() < this.minimumMultiverseCoreVersion) {
+    if (multiverseCorePlugin.getProtocolVersion() < this.minimumMultiverseCoreVersion) {
       log(Level.SEVERE, "Your Multiverse-Core is OUT OF DATE");
       log(Level.SEVERE, "This version of Multiverse-Inventories requires Protocol Level: " +
           this.minimumMultiverseCoreVersion);
-      log(Level.SEVERE, "Your of Core Protocol Level is: " + this.mvCore.getProtocolVersion());
+      log(Level.SEVERE, "Your of Core Protocol Level is: " + multiverseCorePlugin.getProtocolVersion());
       log(Level.SEVERE, "Grab an updated copy at: ");
       log(Level.SEVERE, "http://bukkit.onarandombox.com/?dir=multiverse-core");
       throw new IllegalStateException("dependent plugin is out of date");
     }
+
+    return multiverseCorePlugin;
   }
 
-  private void loadCommands() {
+  private HardcoreConfig loadConfig() throws SecurityException, IllegalArgumentException, IOException {
+    log(Level.INFO, "Start of loadConfig method");
     
+    HardcoreConfig hardcoreConfig = new HardcoreConfig(this);
+    hardcoreConfig.loadConfig();
+    return hardcoreConfig;
+  }
+
+  private CommandHandler loadCommands() {
+
     log(Level.INFO, "Start of loadCommands method");
 
-    this.commandHandler = this.mvCore.getCommandHandler();
-    this.commandHandler.registerCommand(new InfoCommand(this));
+    CommandHandler commandHandler = this.mvCore.getCommandHandler();
+    commandHandler.registerCommand(new InfoCommand(this));
 
-    for (com.onarandombox.commandhandler.Command c : this.commandHandler.getAllCommands()) {
+    for (com.onarandombox.commandhandler.Command c : commandHandler.getAllCommands()) {
       if (c instanceof HelpCommand) {
         c.addKey(this.commandAlias);
       }
     }
+
+    return commandHandler;
   }
 
   /**
@@ -114,7 +124,7 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
     }
     ArrayList<String> allArgs = new ArrayList<>(Arrays.asList(args));
     allArgs.add(0, command.getName());
-    return this.getCommandHandler().locateAndRunCommand(sender, allArgs);
+    return this.cmdHandler.locateAndRunCommand(sender, allArgs);
   }
 
   @Override
@@ -122,9 +132,8 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
     log(Level.INFO, this.name + " disabled");
   }
 
-  @Override
-  public void onLoad() {
-    getDataFolder().mkdirs();
+  public String getCommandAlias() {
+    return commandAlias;
   }
 
   @Override

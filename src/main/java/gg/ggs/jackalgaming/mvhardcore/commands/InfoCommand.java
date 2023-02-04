@@ -27,6 +27,6 @@ public class InfoCommand extends BaseCommand {
 
     @Override
     protected void runPlayerCommand(CommandSender sender, List<String> args) {
-        sender.sendMessage("You successfully called the command: " + this.getCommandName());
+        sender.sendMessage("You successfully called the command: " + sender.getName());
     }
 }
