@@ -10,8 +10,8 @@ import gg.ggs.jackalgaming.configuration.ConfigValue;
 import gg.ggs.jackalgaming.mvhardcore.MultiverseHardcore;
 
 public class HardcoreConfig extends ConfigFile {
-    private static final ConfigValue<Date> CREATED_AT = new ConfigValue<>("world.created_at", null);
-    private static final ConfigValue<String> WORLD_NAME = new ConfigValue<>("world.name", "Hardcore");
+    public static final ConfigValue<Date> CREATED_AT = new ConfigValue<>("world.created_at", null);
+    public static final ConfigValue<String> WORLD_NAME = new ConfigValue<>("world.name", "Hardcore");
 
     public HardcoreConfig(MultiverseHardcore plugin)
             throws IOException, SecurityException, IllegalArgumentException {

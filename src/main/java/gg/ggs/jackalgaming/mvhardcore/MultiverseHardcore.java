@@ -8,6 +8,8 @@ import java.util.logging.Logger;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,6 +20,7 @@ import com.onarandombox.commandhandler.CommandHandler;
 
 import gg.ggs.jackalgaming.mvhardcore.commands.InfoCommand;
 import gg.ggs.jackalgaming.mvhardcore.configuration.HardcoreConfig;
+import gg.ggs.jackalgaming.mvhardcore.listeners.HardcoreCoreListener;
 
 /*
  * mvhardcore java plugin
@@ -34,7 +37,7 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
   private MultiverseCore mvCore;
 
   // Services
-  private HardcoreConfig config;
+  private HardcoreConfig hardcoreConfig;
   private CommandHandler cmdHandler;
 
   @Override
@@ -42,15 +45,16 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
     try {
       this.name = this.getName();
       this.logger = Logger.getLogger(this.name);
-      log(Level.INFO, "Attempting to enable " + this.name);
 
       // Register DI instances
       this.mvCore = loadMultiverseCore();
-      this.config = loadConfig();
+      reloadConfig();
       this.cmdHandler = loadCommands();
       this.getCore().incrementPluginCount();
 
       // Register events
+      PluginManager pm = this.getServer().getPluginManager();
+      pm.registerEvents(new HardcoreCoreListener(this), this);
 
       log(Level.INFO, this.name + " enabled");
     } catch (Exception e) {
@@ -60,9 +64,6 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
   }
 
   private MultiverseCore loadMultiverseCore() throws IllegalStateException {
-
-    log(Level.INFO, "Start of loadMultiverseCore method");
-
     // Retrieve plugin
     MultiverseCore multiverseCorePlugin = (MultiverseCore) this.getServer().getPluginManager()
         .getPlugin(this.multiverCorePluginName);
@@ -86,17 +87,32 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
     return multiverseCorePlugin;
   }
 
-  private HardcoreConfig loadConfig() throws SecurityException, IllegalArgumentException, IOException {
-    log(Level.INFO, "Start of loadConfig method");
-    
-    HardcoreConfig hardcoreConfig = new HardcoreConfig(this);
-    hardcoreConfig.loadConfig();
+  public HardcoreConfig getHardcoreConfig() {
     return hardcoreConfig;
   }
 
-  private CommandHandler loadCommands() {
+  @NotNull
+  @Override
+  public FileConfiguration getConfig() {
+      if (this.hardcoreConfig == null) {
+          reloadConfig();
+      }
+      return this.hardcoreConfig.getConfig();
+  }
+  
+  @Override
+  public void reloadConfig() {    
+    try {    
+      log(Level.INFO, "Loading Config");
+      this.hardcoreConfig = new HardcoreConfig(this);
+      hardcoreConfig.loadConfig();
+    } catch (SecurityException | IllegalArgumentException | IOException e) {
+      log(Level.INFO, "Error while Loading Config: " + e.getMessage());
+    }
+  }
 
-    log(Level.INFO, "Start of loadCommands method");
+  private CommandHandler loadCommands() {
+    log(Level.INFO, "Loading Commands");
 
     CommandHandler commandHandler = this.mvCore.getCommandHandler();
     commandHandler.registerCommand(new InfoCommand(this));

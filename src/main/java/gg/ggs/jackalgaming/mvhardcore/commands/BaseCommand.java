@@ -35,8 +35,8 @@ public abstract class BaseCommand extends Command {
     protected abstract void runPlayerCommand(CommandSender sender, List<String> args);
 
     protected void runConsoleCommand(CommandSender sender, List<String> args) {
-        String errorMessage = this.getCommandName() + " can not be ran from the console";
+        String errorMessage = this.getCommandUsage() + " can not be ran from the console";
         sender.sendMessage(errorMessage);
-        throw new IllegalAccessError("TODO: IS THIS SEEN?? Some IllegalAccessError thrown in the BaseCommand. message: " + errorMessage);
+        throw new IllegalAccessError("[Multiverse-Hardcore] " + errorMessage);
     }
 }

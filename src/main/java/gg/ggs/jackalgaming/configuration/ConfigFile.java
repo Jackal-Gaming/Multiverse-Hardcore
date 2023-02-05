@@ -49,8 +49,8 @@ public abstract class ConfigFile {
                             new Object[] { configValuePath, configDefaultValue });
                     config.set(configValue.getPath(), configDefaultValue);
                 } else {
-                    // Or create a section for the value
-                    config.createSection(configValuePath);
+                    // Or set the value to null
+                    config.set(configValue.getPath(), null);
                 }
             }
         }

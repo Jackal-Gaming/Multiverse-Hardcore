@@ -7,6 +7,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
 import gg.ggs.jackalgaming.mvhardcore.MultiverseHardcore;
+import gg.ggs.jackalgaming.mvhardcore.configuration.HardcoreConfig;
 
 public class InfoCommand extends BaseCommand {
     static final Permission PERMISSION = new Permission(
@@ -27,6 +28,13 @@ public class InfoCommand extends BaseCommand {
 
     @Override
     protected void runPlayerCommand(CommandSender sender, List<String> args) {
-        sender.sendMessage("You successfully called the command: " + sender.getName());
+        String hardcoreWorldName = this.mvhcPlugin.getConfig().getString(HardcoreConfig.WORLD_NAME.getPath());
+        boolean doesHardcoreWorldExist = this.mvhcPlugin.getCore().getMVWorldManager().isMVWorld(hardcoreWorldName);
+
+        sender.sendMessage(new String[]{
+            "Hello, : " + sender.getName(),
+            "Hardcore World: " + hardcoreWorldName,
+            "Exists?: " + doesHardcoreWorldExist
+        });
     }
 }
