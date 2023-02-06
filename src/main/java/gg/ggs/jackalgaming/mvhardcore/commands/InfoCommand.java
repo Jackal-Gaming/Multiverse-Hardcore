@@ -27,9 +27,11 @@ public class InfoCommand extends BaseCommand {
         this.setCommandUsage("/" + commandAlias + USAGE);
         this.setArgRange(1, 1);
 
-        Set<String> commandVariations = getAllCapitalizationVariations(
+        String[] commandVariations = new String[] {
             commandAlias + " info",
-            commandAlias + "i");
+            commandAlias + "info",
+            commandAlias + "i"
+        };
         for (String command : commandVariations) {
             this.addKey(command);
         }

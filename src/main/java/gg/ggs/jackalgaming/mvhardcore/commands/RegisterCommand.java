@@ -27,9 +27,12 @@ public class RegisterCommand extends BaseCommand {
         this.setCommandUsage("/" + commandAlias + USAGE);
         this.setArgRange(1, 1);
 
-        Set<String> commandVariations = getAllCapitalizationVariations(
+        String[] commandVariations = new String[] {
             commandAlias + " register",
-            commandAlias + " link");
+            commandAlias + "register",
+            commandAlias + "r",
+            commandAlias + " link"
+        };
         for (String command : commandVariations) {
             this.addKey(command);
         }

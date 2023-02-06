@@ -27,9 +27,11 @@ public class ListCommand extends BaseCommand {
         this.setCommandUsage("/" + commandAlias + USAGE);
         this.setArgRange(0, 0);
 
-        Set<String> commandVariations = getAllCapitalizationVariations(
+        String[] commandVariations = new String[] {
             commandAlias + " list",
-            commandAlias + "l");
+            commandAlias + "list",
+            commandAlias + "l"
+        };
         for (String command : commandVariations) {
             this.addKey(command);
         }

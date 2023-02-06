@@ -21,37 +21,6 @@ public abstract class BaseCommand extends Command {
         this.mvhcPlugin = plugin;
     }
 
-    protected static Set<String> getAllCapitalizationVariations(String... commands) {
-        Set<String> variations = new HashSet<>();
-        for (String command : commands ) { 
-            variations.addAll(getAllCapitalizationVariations(command));
-        }
-        return variations;
-    }
-
-    private static Set<String> getAllCapitalizationVariations(String command) {
-        Set<String> variations = new HashSet<>();
-        double totalVariations = Math.pow(2, command.length()) - 1;
-        for (int i = 0; i < totalVariations; i++) {
-            String capitalizationFlags = Integer.toString(i, 2);
-            capitalizationFlags = StringUtils.repeat("0", command.length() - capitalizationFlags.length()) + capitalizationFlags;
-            StringBuilder cmdVariation = new StringBuilder();
-            for (int commandCharIndex = 0; commandCharIndex < capitalizationFlags.length(); commandCharIndex++) {
-                String cmdCharacter = command.substring(commandCharIndex, commandCharIndex + 1);
-                String cmdCapitalizationFlag = capitalizationFlags.substring(commandCharIndex, commandCharIndex + 1);
-                if (cmdCapitalizationFlag.equals("0")) {
-                    //0 (lowercase)
-                    cmdVariation.append(cmdCharacter.toLowerCase());
-                } else {
-                    //1 (uppercase)
-                    cmdVariation.append(cmdCharacter.toUpperCase());
-                }
-            }
-            variations.add(cmdVariation.toString());
-        }
-        return variations;
-    }
-
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         try {

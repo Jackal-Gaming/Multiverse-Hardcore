@@ -1,5 +1,6 @@
 package gg.ggs.jackalgaming.mvhardcore.commands;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -28,9 +29,12 @@ public class HelpCommand extends BaseCommand {
         this.setCommandUsage("/" + commandAlias + USAGE);
         this.setArgRange(0, 0);
 
-        Set<String> commandVariations = getAllCapitalizationVariations(
+        String[] commandVariations = new String[] {
+            commandAlias,
             commandAlias + " help",
-            commandAlias + "h");
+            commandAlias + "help",
+            commandAlias + "h"
+        };
         for (String command : commandVariations) {
             this.addKey(command);
         }
