@@ -46,21 +46,23 @@ public class RegisterCommand extends BaseCommand {
     }
 
     private void registerWorld(CommandSender sender, String worldName) {
-        boolean isWorldInConfig = this.mvhcPlugin.getHardcoreConfig().getWorldListSection().getWorldConfigMap().containsKey(worldName);
         boolean doesMultiverseWorldExist = this.mvhcPlugin.getCore().getMVWorldManager().isMVWorld(worldName);
-
-        if (isWorldInConfig) {
-            sender.sendMessage(ChatColor.RED + "World is already registered with Multiverse-Hardcore");
-            return;
-        }
 
         if (!doesMultiverseWorldExist) {
             sender.sendMessage(ChatColor.RED + "That world can not be found in Multiverse");
             return;
         }
 
-        this.mvhcPlugin.getHardcoreConfig().getWorldListSection().addWorldConfigSection(worldName);
+        String matchingMvWorldName = this.mvhcPlugin.getCore().getMVWorldManager().getMVWorld(worldName).getName();
+        boolean isWorldInConfig = this.mvhcPlugin.getHardcoreConfig().getWorldListSection().getWorldConfigMap().containsKey(matchingMvWorldName);
+
+        if (isWorldInConfig) {
+            sender.sendMessage(ChatColor.RED + "World is already registered with Multiverse-Hardcore");
+            return;
+        }
+
+        this.mvhcPlugin.getHardcoreConfig().getWorldListSection().addWorldConfigSection(matchingMvWorldName);
         this.mvhcPlugin.getHardcoreConfig().save();
-        sender.sendMessage(ChatColor.AQUA + worldName + " registered with Multiverse-Hardcore");
+        sender.sendMessage(ChatColor.AQUA + "World " + matchingMvWorldName + " registered with Multiverse-Hardcore");
     }
 }

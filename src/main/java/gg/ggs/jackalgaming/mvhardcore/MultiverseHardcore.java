@@ -22,7 +22,9 @@ import gg.ggs.jackalgaming.mvhardcore.commands.InfoCommand;
 import gg.ggs.jackalgaming.mvhardcore.commands.ListCommand;
 import gg.ggs.jackalgaming.mvhardcore.commands.RegisterCommand;
 import gg.ggs.jackalgaming.mvhardcore.configuration.HardcoreConfig;
-import gg.ggs.jackalgaming.mvhardcore.listeners.HardcoreCoreListener;
+import gg.ggs.jackalgaming.mvhardcore.listeners.HardcoreListener;
+import gg.ggs.jackalgaming.mvhardcore.listeners.HardcoreMultiverseCoreListener;
+import gg.ggs.jackalgaming.mvhardcore.services.PlayerService;
 
 /*
  * mvhardcore java plugin
@@ -40,6 +42,7 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
 
   // Services
   private HardcoreConfig hardcoreConfig;
+  private PlayerService playerService;
   private CommandHandler cmdHandler;
 
   @Override
@@ -51,12 +54,12 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
       // Register DI instances
       this.mvCore = loadMultiverseCore();
       reloadConfig();
+      this.playerService = new PlayerService(this);
       this.cmdHandler = loadCommands();
       this.getCore().incrementPluginCount();
 
       // Register events
-      PluginManager pm = this.getServer().getPluginManager();
-      pm.registerEvents(new HardcoreCoreListener(this), this);
+      registerEvents();
 
       log(Level.INFO, this.name + " enabled");
     } catch (Exception e) {
@@ -93,18 +96,22 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
     return hardcoreConfig;
   }
 
+  public PlayerService getPlayerService() {
+    return playerService;
+  }
+
   @NotNull
   @Override
   public FileConfiguration getConfig() {
-      if (this.hardcoreConfig == null) {
-          reloadConfig();
-      }
-      return this.hardcoreConfig.getConfig();
+    if (this.hardcoreConfig == null) {
+      reloadConfig();
+    }
+    return this.hardcoreConfig.getConfig();
   }
-  
+
   @Override
-  public void reloadConfig() {    
-    try {    
+  public void reloadConfig() {
+    try {
       log(Level.INFO, "Loading Config");
       this.hardcoreConfig = new HardcoreConfig(this);
       hardcoreConfig.loadConfig();
@@ -129,6 +136,13 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
     }
 
     return commandHandler;
+  }
+
+  private void registerEvents() {
+    PluginManager pm = this.getServer().getPluginManager();
+
+    pm.registerEvents(new HardcoreListener(this), this);
+    pm.registerEvents(new HardcoreMultiverseCoreListener(this), this);
   }
 
   /**

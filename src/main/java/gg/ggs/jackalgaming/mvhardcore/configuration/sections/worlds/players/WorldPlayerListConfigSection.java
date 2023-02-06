@@ -20,7 +20,8 @@ public class WorldPlayerListConfigSection extends ConfigSection {
         Set<String> playersFromConfig = getValueFromConfig();
         this.playerConfigMap.clear();
         for(String playerId : playersFromConfig) {
-            addPlayerConfigSection(playerId);
+            //Note: Don't have the player name from this list, but its value shouldn't get overridden.
+            addPlayerConfigSection(playerId, playerId);
         }
     }
 
@@ -28,8 +29,8 @@ public class WorldPlayerListConfigSection extends ConfigSection {
         return playerConfigMap;
     }
 
-    public void addPlayerConfigSection(String playerId) {
-        WorldPlayerConfigSection newPlayerConfig = new WorldPlayerConfigSection(configFile, getPath(), playerId);
+    public void addPlayerConfigSection(String playerId, String playerName) {
+        WorldPlayerConfigSection newPlayerConfig = new WorldPlayerConfigSection(configFile, getPath(), playerId, playerName);
 
         //Add to local memory
         this.playerConfigMap.put(playerId, newPlayerConfig);

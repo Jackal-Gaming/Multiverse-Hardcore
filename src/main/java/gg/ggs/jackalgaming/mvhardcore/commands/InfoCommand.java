@@ -28,9 +28,9 @@ public class InfoCommand extends BaseCommand {
         this.setArgRange(1, 1);
 
         String[] commandVariations = new String[] {
-            commandAlias + " info",
-            commandAlias + "info",
-            commandAlias + "i"
+                commandAlias + " info",
+                commandAlias + "info",
+                commandAlias + "i"
         };
         for (String command : commandVariations) {
             this.addKey(command);
@@ -45,17 +45,21 @@ public class InfoCommand extends BaseCommand {
     }
 
     private void listOutWorldInfo(CommandSender sender, String worldName) {
-        boolean isWorldInConfig = this.mvhcPlugin.getHardcoreConfig().getWorldListSection().getWorldConfigMap().containsKey(worldName);
         boolean doesMultiverseWorldExist = this.mvhcPlugin.getCore().getMVWorldManager().isMVWorld(worldName);
 
-        if (!isWorldInConfig && !doesMultiverseWorldExist) {
-            sender.sendMessage("That world can not be found");
+        String matchingMvWorldName = doesMultiverseWorldExist
+                ? this.mvhcPlugin.getCore().getMVWorldManager().getMVWorld(worldName).getName()
+                : worldName;
+        boolean isWorldInConfig = this.mvhcPlugin.getHardcoreConfig().getWorldListSection().getWorldConfigMap()
+                .containsKey(matchingMvWorldName);
+
+        if (!isWorldInConfig) {
+            sender.sendMessage(ChatColor.RED + "That world is not registered with Multiverse-Hardcore");
         } else {
             sender.sendMessage(new String[] {
-                HEADER,
-                ChatColor.GOLD + "World Name: " + worldName,
-                ChatColor.AQUA + "Multiverse World: " + doesMultiverseWorldExist,
-                ChatColor.GOLD + "Multiverse-Hardcore World: " + isWorldInConfig
+                    HEADER,
+                    ChatColor.GOLD + "World Name: " + worldName,
+                    ChatColor.AQUA + "Multiverse World: " + doesMultiverseWorldExist
             });
         }
     }
