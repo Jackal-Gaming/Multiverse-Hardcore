@@ -2,6 +2,7 @@ package gg.ggs.jackalgaming.mvhardcore.listeners;
 
 import java.io.IOException;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -57,6 +58,7 @@ public class HardcoreMultiverseCoreListener implements Listener {
         boolean isPlayerPresencePermitted = this.plugin.getPlayerService().isPlayerPresencePermitted(player, toWorld);
         if (!isPlayerPresencePermitted) {
             event.setCancelled(true);
+            player.sendMessage(ChatColor.RED + "You can not teleport to the hardcore world you've died in: " + toWorld.getName());
         }
     }
 
@@ -74,6 +76,7 @@ public class HardcoreMultiverseCoreListener implements Listener {
         if (!isPlayerPresencePermitted) {
             Location respawnRedirectLocation = this.plugin.getHardcoreConfig().getGeneralSettings().getRespawnLocation().getLocation(plugin);
             event.setRespawnLocation(respawnRedirectLocation);
+            player.sendMessage(ChatColor.RED + "You can not respawn in the hardcore world you've died in: " + toWorld.getName());
         }
     }
 }
