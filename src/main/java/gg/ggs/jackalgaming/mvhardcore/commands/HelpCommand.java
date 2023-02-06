@@ -49,6 +49,7 @@ public class HelpCommand extends BaseCommand {
             ChatColor.AQUA + "/" + commandAlias + HelpCommand.USAGE,
             ChatColor.AQUA + "/" + commandAlias + ListCommand.USAGE,
             ChatColor.AQUA + "/" + commandAlias + InfoCommand.USAGE,
+            ChatColor.AQUA + "/" + commandAlias + RegisterCommand.USAGE,
         });
     }
 }
