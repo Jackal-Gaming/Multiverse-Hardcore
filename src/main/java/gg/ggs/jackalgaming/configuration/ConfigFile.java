@@ -36,7 +36,8 @@ public abstract class ConfigFile {
         }
     }
 
-    protected <T> void setDefaults(List<ConfigValue<T>> configValues) {
+    public <T> void setDefaults(List<ConfigValue<T>> configValues) { setDefaults(configValues, false); }
+    public <T> void setDefaults(List<ConfigValue<T>> configValues, boolean isSection) {
         for (ConfigValue<T> configValue : configValues) {
             String configValuePath = configValue.getPath();
             Object configDefaultValue = configValue.getDefaultValue();
@@ -47,16 +48,26 @@ public abstract class ConfigFile {
                     // Set the default value
                     logger.log(Level.FINE, "Config: Defaulting {0} to {1}",
                             new Object[] { configValuePath, configDefaultValue });
-                    config.set(configValue.getPath(), configDefaultValue);
+                    config.set(configValuePath, configDefaultValue);
                 } else {
                     // Or set the value to null
-                    config.set(configValue.getPath(), null);
+                    if (isSection) {
+                        config.createSection(configValuePath);
+                    } else {
+                        config.set(configValuePath, null);
+                    }
                 }
             }
         }
     }
 
     public abstract void loadConfig();
+
+    public void log(Level level, String msg) {
+      if (logger != null) {
+        logger.log(level, msg);
+      }
+    }
 
     public void save() {
         try {

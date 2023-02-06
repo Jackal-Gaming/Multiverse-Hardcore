@@ -15,10 +15,12 @@ import org.jetbrains.annotations.NotNull;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVPlugin;
-import com.onarandombox.MultiverseCore.commands.HelpCommand;
 import com.onarandombox.commandhandler.CommandHandler;
 
+import gg.ggs.jackalgaming.mvhardcore.commands.HelpCommand;
 import gg.ggs.jackalgaming.mvhardcore.commands.InfoCommand;
+import gg.ggs.jackalgaming.mvhardcore.commands.ListCommand;
+import gg.ggs.jackalgaming.mvhardcore.commands.RegisterCommand;
 import gg.ggs.jackalgaming.mvhardcore.configuration.HardcoreConfig;
 import gg.ggs.jackalgaming.mvhardcore.listeners.HardcoreCoreListener;
 
@@ -115,10 +117,13 @@ public class MultiverseHardcore extends JavaPlugin implements MVPlugin {
     log(Level.INFO, "Loading Commands");
 
     CommandHandler commandHandler = this.mvCore.getCommandHandler();
+    commandHandler.registerCommand(new HelpCommand(this));
+    commandHandler.registerCommand(new ListCommand(this));
     commandHandler.registerCommand(new InfoCommand(this));
+    commandHandler.registerCommand(new RegisterCommand(this));
 
     for (com.onarandombox.commandhandler.Command c : commandHandler.getAllCommands()) {
-      if (c instanceof HelpCommand) {
+      if (c instanceof com.onarandombox.MultiverseCore.commands.HelpCommand) {
         c.addKey(this.commandAlias);
       }
     }

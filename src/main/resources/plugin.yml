@@ -7,9 +7,19 @@ depend: ['Multiverse-Core']
 description: Create team-based multiverse hardcore worlds
 
 commands:
-  mvhc:
-    description: Generic Multiverse-Hardcore Command
+  mvhc help:
+    description: Returns a nice help menu
+    aliases: [mvhch]
     usage: /<command>
-  mvhcinfo:
-    description: Returns detailed information on the ongoing hardcore world, if any
+  mvhc list:
+    description: Returns list of registered hardcore worlds
+    aliases: [mvhcl]
+    usage: /<command>
+  mvhc info:
+    description: Returns detailed information about the specified hardcore world
+    aliases: [mvhci]
+    usage: /<command>
+  mvhc register:
+    description: Register an existing Multiverse world as a hardcore world
+    aliases: [mvhc link]
     usage: /<command>
